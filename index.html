@@ -35,6 +35,96 @@
 <a id="introduction-to-principal-components-analysis" class="anchor" href="#introduction-to-principal-components-analysis" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction to Principal Components Analysis</h3>
 
 <p>Principal Components Analysis (PCA) is a multivariate technique used to reduce a large data set into fewer "components". Without getting too technical, it examples all possible correlations (<em>specifically linear combinations</em>) of each variable, and organizes them into a smaller set of components which account for the greatest proportion of the data. Resulting components are orthogonal to each other (e.g., the second component is orthogonal to the first, the third component is orthogonal to the second) in order to account for the most variance as possible. A useful summary of PCA can be found here: <a href="https://www.utdallas.edu/%7Eherve/abdi-awPCA2010.pdf">Principal Components Analysis Overview</a></p>
+
+<p>The data used for this example is a Kaggle dataset about normal or abnormal spinal positioning, with twelve measured spinal variables. The dataset can be found here: <a href="https://github.com/mjtat/Principal-Components-Analysis-in-R/blob/master/Dataset_spine.csv">Spinal Data</a></p>
+
+<p>The full script can be found here: <a href="https://github.com/mjtat/Principal-Components-Analysis-in-R/blob/master/pca.R">pca.R</a></p>
+
+<hr>
+
+<h3>
+<a id="first-read-in-the-data-and-re-code-the-data" class="anchor" href="#first-read-in-the-data-and-re-code-the-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>First, read in the data, and re-code the data.</h3>
+
+<pre><code># Read in the data
+spine_dat &lt;- read.csv("Dataset_spine.csv", header = TRUE, stringsAsFactors = FALSE)
+
+#Re-label the class column
+spine_dat$Class_att[spine_dat$Class_att == "Abnormal"] &lt;- 1
+spine_dat$Class_att[spine_dat$Class_att == "Normal"] &lt;- 2
+</code></pre>
+
+<h3>
+<a id="conduct-the-pca-look-at-the-component-loadings-eigenvectors-for-the-first-five-variables" class="anchor" href="#conduct-the-pca-look-at-the-component-loadings-eigenvectors-for-the-first-five-variables" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Conduct the PCA, look at the component loadings (eigenvectors) for the first five variables</h3>
+
+<pre><code># Conduct the pca using the prcomp() function. Center will center all variables, and scaling 
+# will standardize all the variables.
+
+spine_PCA &lt;- prcomp(spine_dat, center = TRUE, scale. = TRUE)
+
+# Retrieve the first 5 prinicipal component loadings.
+head(spine_PCA$rotation, 5)
+</code></pre>
+
+<p>spine_PCA_summary &lt;- summary(spine_PCA)</p>
+
+<h3>
+<a id="manually-generate-variances-and-standard-deviations-these-values-are-also-provided-by-the-summary-function-above" class="anchor" href="#manually-generate-variances-and-standard-deviations-these-values-are-also-provided-by-the-summary-function-above" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Manually generate variances and standard deviations (these values are also provided by the summary function above).</h3>
+
+<pre><code># Generate the PCA standard deviations
+spinePCA_SD&lt;-spine_PCA$sdev
+
+# Generate the PCA variances
+spinePCA_var &lt;- round(spinePCA_SD^2, digits = 3)
+
+# Generate the proportion of variance for each component
+propvar_spinePCA &lt;- spinePCA_var / sum(spinePCA_var)
+</code></pre>
+
+<h3>
+<a id="generate-a-scree-plot-and-bar-plot-of-the-components-x-axis-and-variance-accounted-for-y-axis" class="anchor" href="#generate-a-scree-plot-and-bar-plot-of-the-components-x-axis-and-variance-accounted-for-y-axis" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Generate a scree plot and bar plot of the components (x-axis) and variance accounted for (y-axis)</h3>
+
+<pre><code># Produce a screeplot and a barplot of the amount of variance each component contributes.
+plot(spine_PCA_summary$importance[2, 1:12], xlab = "Principal Component", ylab = "Proportion of Variance Explained", type = "h")
+
+barplot(spine_PCA_summary$importance[2, 1:12], xlab = "Principal Component", ylab = "Proportion of Variance Explained")
+</code></pre>
+
+<h3>
+<a id="resulting-plots" class="anchor" href="#resulting-plots" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resulting plots</h3>
+
+<p><img src="https://github.com/mjtat/Principal-Components-Analysis-in-R/blob/master/PCA_Screeplot.png?raw=true" alt=""></p>
+
+<p><img src="https://github.com/mjtat/Principal-Components-Analysis-in-R/blob/master/PCA_barplot.png?raw=true" alt=""></p>
+
+<p><strong>One rule to determine how many of the components to keep for later analyses is to search for the "elbow" of the plots Another qualitative way is to take the number of components where the variance is &lt; 1. However, these methods are generally qualitative, and Horn's Parallel Analysis is now preferred as a method to determine how many components to keep. Horn's analysis calculates the 95% percentile eigenvalue value, and uses that as a cutoff.</strong></p>
+
+<pre><code># Conduct Horn's Parallel Analysis
+horn&lt;-paran(spine_dat, iterations = 5000, centile = 0, quietly = FALSE, 
+      status = TRUE, all = TRUE, cfa = FALSE, seed = 0)
+
+-------------------------------------------------- 
+Component   Adjusted    Unadjusted    Estimated 
+            Eigenvalue  Eigenvalue    Bias 
+-------------------------------------------------- 
+1           2.947658    3.279216      0.331558
+2           1.001448    1.245541      0.244092
+3           0.966187    1.143004      0.176816
+4           0.937743    1.055545      0.117802
+5           0.959352    1.023933      0.064580
+6           0.952924    0.967660      0.014735
+7           0.926671    0.893034     -0.03363
+8           0.965511    0.884368     -0.08114
+9           0.856166    0.726670     -0.12949
+10          0.646394    0.467974     -0.17841
+11          0.544201    0.313050     -0.23115
+12          0.295739   0.000000     -0.29573
+-------------------------------------------------- 
+
+Adjusted eigenvalues &gt; 1 indicate dimensions to retain.
+(2 components retained)
+</code></pre>
+
+<p><strong>Horn's analysis suggests only keeping any components over the adjusted eigenvalue of 1. It's not clear necessarily what these two components mean. One possibility is that these components generally summarize whether the spinal position is abnormal or normal. Additional models may choose to compare a full PCA with 12 components and a reduced PCA to see which model may fit future data better.</strong></p>
       </section>
     </div>
 
