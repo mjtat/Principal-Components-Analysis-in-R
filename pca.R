@@ -30,5 +30,6 @@ plot(spine_PCA_summary$importance[2, 1:12], xlab = "Principal Component", ylab =
 barplot(spine_PCA_summary$importance[2, 1:12], xlab = "Principal Component", ylab = "Proportion of Variance Explained")
 
 # Conduct Horn's Parallel Analysis
+library("paran")
 horn<-paran(spine_dat, iterations = 5000, centile = 0, quietly = FALSE, 
       status = TRUE, all = TRUE, cfa = FALSE, seed = 0)
