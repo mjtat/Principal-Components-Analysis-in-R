@@ -1,0 +1,6 @@
+{
+  "name": "Principal Components Analysis (PCA) in R",
+  "tagline": "",
+  "body": "### Introduction to Principal Components Analysis\r\nPrincipal Components Analysis (PCA) is a multivariate technique used to reduce a large data set into fewer \"components\". Without getting too technical, it examples all possible correlations (_specifically linear combinations_) of each variable, and organizes them into a smaller set of components which account for the greatest proportion of the data. Resulting components are orthogonal to each other (e.g., the second component is orthogonal to the first, the third component is orthogonal to the second) in order to account for the most variance as possible. A useful summary of PCA can be found here: [Principal Components Analysis Overview](https://www.utdallas.edu/~herve/abdi-awPCA2010.pdf)",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
