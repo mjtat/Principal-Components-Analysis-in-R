@@ -12,6 +12,8 @@ spine_PCA <- prcomp(spine_dat, center = TRUE, scale. = TRUE)
 # Retrieve the first 5 prinicipal component loadings.
 head(spine_PCA$rotation, 5)
 
+spine_PCA_summary <- summary(spine_PCA)
+
 # Generate the PCA standard deviations
 spinePCA_SD<-spine_PCA$sdev
 
