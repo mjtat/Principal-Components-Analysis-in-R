@@ -63,9 +63,9 @@ spine_PCA &lt;- prcomp(spine_dat, center = TRUE, scale. = TRUE)
 
 # Retrieve the first 5 prinicipal component loadings.
 head(spine_PCA$rotation, 5)
-</code></pre>
 
-<p>spine_PCA_summary &lt;- summary(spine_PCA)</p>
+spine_PCA_summary &lt;- summary(spine_PCA)
+</code></pre>
 
 <h3>
 <a id="manually-generate-variances-and-standard-deviations-these-values-are-also-provided-by-the-summary-function-above" class="anchor" href="#manually-generate-variances-and-standard-deviations-these-values-are-also-provided-by-the-summary-function-above" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Manually generate variances and standard deviations (these values are also provided by the summary function above).</h3>
